@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+:root{
+  --yellow: #ffc300;
+}
+
+#root {
+  min-height: 100vh;
+  background-color: #121212;
+  font-family: "Roboto", "sans-serif";
+}
+
+.navbar {
+  padding: 0px 30px;
+  height: 80px;
+  background-color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar h1{
+  font-family: "Tiny5", sans-serif;
+  color: #ffc300;
+}
+
+.menu-links {
+  display: flex;
+  column-gap: 30px;
+}
+
+.menu-links a {
+  position: relative;
+  text-decoration: none;
+  font-weight: 900;
+  color: #ffc300;
+}
+
+.menu-links a:after{
+  content: '';
+  position:absolute;
+  bottom: -5px;
+  left: 0px;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.3s ease;
+}
+
+.menu-links a:hover:after {
+  width: 100%;
+  height: 2px;
+  background-color: #ffc300;
+  transform: scaleX(1);
+}
+
+
+/* HomePage */
+
+.game-list-with-filters{
+  padding: 20px 0px;
+}
+
+
+
+/* GameCard */
+
+  .card-wrapper {
+    perspective: 1000px;
+  }
+
+  /* 2. L'affiche elle-même */
+  .poster {
+    width: 220px;
+    height: 320px;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease, box-shadow 0.15s ease-out;
+    transform-style: preserve-3d;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 15px;
+    font-weight: bold;
+    text-shadow: 0 2px 4px black;
+  }
+
+  .poster:hover {
+    box-shadow: 0 30px 45px rgba(0,0,0,0.6);
+  }
