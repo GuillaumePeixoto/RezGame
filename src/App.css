@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-:root{
+:root {
   --yellow: #ffc300;
 }
 
@@ -19,7 +19,7 @@
   justify-content: space-between;
 }
 
-.navbar h1{
+.navbar h1 {
   font-family: "Tiny5", sans-serif;
   color: #ffc300;
 }
@@ -36,9 +36,9 @@
   color: #ffc300;
 }
 
-.menu-links a:after{
-  content: '';
-  position:absolute;
+.menu-links a:after {
+  content: "";
+  position: absolute;
   bottom: -5px;
   left: 0px;
   transform: scaleX(0);
@@ -53,41 +53,86 @@
   transform: scaleX(1);
 }
 
-
 /* HomePage */
 
-.game-list-with-filters{
+.game-list-with-filters {
   padding: 20px 0px;
 }
 
+/* Game List */
 
+.games-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+/* Form Add/Update Game */
+
+.input-text-container {
+  position: relative;
+  padding: 20px;
+}
+
+.input-text-container label {
+  position: absolute;
+  top: 10px;
+  left: 40px;
+  background-color: #232222;
+  padding: 0 5px;
+}
+
+.input-text-container input {
+  color: white;
+  border: 1px solid white;
+  padding: 14px 12px;
+  display: flex;
+  border-radius: 10px;
+  outline: none;
+  width: 100%;
+}
+
+.input-text-container input:focus,
+.input-text-container input:hover {
+  border: 1px solid #facc15;
+}
 
 /* GameCard */
 
-  .card-wrapper {
-    perspective: 1000px;
-  }
+.card-wrapper {
+  perspective: 1000px;
+  width: 100%;
+  padding: 15px;
+}
 
-  /* 2. L'affiche elle-même */
-  .poster {
-    width: 220px;
-    height: 320px;
-    border-radius: 10px;
-    background-size: cover;
-    background-position: center;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-    transition: transform 0.3s ease, box-shadow 0.15s ease-out;
-    transform-style: preserve-3d;
-    cursor: pointer;
-    color: white;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding-bottom: 15px;
-    font-weight: bold;
-    text-shadow: 0 2px 4px black;
-  }
+.keen-slider {
+  padding: 20px 0px;
+}
 
-  .poster:hover {
-    box-shadow: 0 30px 45px rgba(0,0,0,0.6);
-  }
+/* 2. L'affiche elle-même */
+
+.poster {
+  width: 100%;
+  aspect-ratio: 220 / 320; /* garde les proportions sans figer la taille */
+  border-radius: 10px;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.15s ease-out;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  color: white;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 15px;
+  font-weight: bold;
+  text-shadow: 0 2px 4px black;
+}
+
+.poster:hover {
+  box-shadow: 0 30px 45px rgba(0, 0, 0, 0.6);
+}

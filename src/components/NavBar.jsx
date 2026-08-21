@@ -10,10 +10,10 @@ function NavBar() {
                     <h1 className="text-3xl">RezGame</h1>
                 </div>
                 <div className="menu-links">
-                    <Link>
+                    <Link to="/">
                         Home
                     </Link>
-                    <Link>
+                    <Link to="/games">
                         All games
                     </Link>
                     <Link>
