@@ -3,18 +3,30 @@ import LoaderImg from "../assets/loading.gif";
 import { useEffect, useState } from "react";
 import GameCard from "../components/GameCard";
 import { useKeenSlider } from "keen-slider/react";
+import "keen-slider/keen-slider.min.css";
 
 function HomePage() {
   const [games, setGames] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [sliderRef] = useKeenSlider({
-    loop: true,
+  const [sliderRef, instanceRef] = useKeenSlider({
+    loop: false,
     mode: "free",
     slides: {
-      perView: 3,
-      spacing: 15,
+      perView: "auto",
+      spacing: 2,
     },
+    // breakpoints: {
+    //   "(min-width: 420px)": {
+    //     slides: { perView: "auto", spacing: 1 },
+    //   },
+    //   "(min-width: 768px)": {
+    //     slides: { perView: 2.2, spacing: 1 },
+    //   },
+    //   "(min-width: 1024px)": {
+    //     slides: { perView: 3, spacing: 15 },
+    //   },
+    // },
   });
 
   const getGames = async () => {
@@ -30,9 +42,13 @@ function HomePage() {
 
   useEffect(() => {
     getGames();
-
-    
   }, []);
+
+  useEffect(() => {
+    if (games.length > 0) {
+      instanceRef.current?.update();
+    }
+  }, [games]);
 
   return (
     <div className="homepage text-white">

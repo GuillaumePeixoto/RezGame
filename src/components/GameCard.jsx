@@ -28,19 +28,20 @@ function GameCard(props) {
     posterRef.current.style.transform =
       "translateZ(0) rotateX(0) rotateY(0) scale(1)";
     posterRef.current.style.transition = "transform 0.3s ease"; // transition uniquement au retour
-    posterRef.current.style.transform = "translateZ(0) rotateX(0) rotateY(0) scale(1)";
+    posterRef.current.style.transform =
+      "translateZ(0) rotateX(0) rotateY(0) scale(1)";
   };
 
   return (
-    <div className="card-wrapper">
+    <div className="card-wrapper keen-slider__slide">
       <div
         ref={posterRef}
         className="poster"
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        style={{ background: `url(${props.game.image}) no-repeat center` }}
+        style={{ background: `url(${props.game.image})` }}
       >
-        {props.game.title}
+        {/* {props.game.title} */}
       </div>
     </div>
   );

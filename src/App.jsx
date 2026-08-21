@@ -1,9 +1,11 @@
 import './App.css'
+import 'keen-slider/keen-slider.min.css'
 import NavBar from './components/NavBar'
 import { Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage'
-import 'keen-slider/keen-slider.min.css'
-import KeenSlider from 'keen-slider'
+import GamesList from './pages/GamesList'
+import FormGame from './pages/FormGame'
+import GameDetailPage from './pages/GameDetailPage'
 
 function App() {
 
@@ -11,9 +13,12 @@ function App() {
   return (
     <>
       <NavBar />
-      <div className="flex flex-col w-2/3 mx-auto mt-4">
+      <div className="flex flex-col sm:w-5/6 lg:w-2/3 mx-4 sm:mx-auto mt-4">
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
+          <Route path="/games" element={<GamesList />}></Route>
+          <Route path="/games/:gameId" element={<GameDetailPage />}></Route>
+          <Route path="/add-game" element={<FormGame />}></Route>
         </Routes>
       </div>
     </>
