@@ -18,6 +18,7 @@ function App() {
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/games" element={<GamesList />}></Route>
           <Route path="/games/:gameId" element={<GameDetailPage />}></Route>
+          <Route path="/games/update/:gameId" element={<FormGame />}></Route>
           <Route path="/add-game" element={<FormGame />}></Route>
         </Routes>
       </div>

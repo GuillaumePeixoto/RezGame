@@ -1,4 +1,5 @@
 import axios from "axios";
+import LoaderImg from "../assets/loading.gif";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
@@ -8,11 +9,15 @@ function FormGame() {
   const { gameId } = useParams();
   const navigate = useNavigate();
 
-  const [gameToUpdate, setGameToUpdate] = useState(null);
   const [filtersList, setFiltersList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   let titlePage = "Add a Game";
   let isUpdate = false;
+
+  if (gameId) {
+    titlePage = "Update a Game";
+    isUpdate = true;
+  }
 
   const customStyles = {
     control: (base, state) => ({
@@ -47,19 +52,26 @@ function FormGame() {
     }),
   };
 
-  if (gameId) {
+  const getGame = async () => {
     try {
-      const response = axios.get(
+      const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/games/${gameId}`,
       );
-      setGameToUpdate(response.data);
-      console.log(response.data);
-      titlePage = "Update a Game";
-      isUpdate = true;
+      let gameData = response.data;
+      setTitle(gameData.title || "");
+      setImage(gameData.image || "");
+      setTypeOfGame(formatDataForSelectFromBDD(gameData.typeOfGame) || []);
+      setTheme(formatDataForSelectFromBDD(gameData.theme) || "");
+      setTypeOfView(formatDataForSelectFromBDD(gameData.typeOfView) || []);
+      setReleaseYear(gameData.releaseYear || "");
+      setPlayingMode(formatDataForSelectFromBDD(gameData.playingMode) || []);
+      setEditor(formatDataForSelectFromBDD(gameData.editor) || []);
+      setPlatform(formatDataForSelectFromBDD(gameData.platform) || []);
+      setIsLoading(false);
     } catch (e) {
       console.log(e);
     }
-  }
+  };
 
   const getFilters = async () => {
     try {
@@ -73,33 +85,15 @@ function FormGame() {
     }
   };
 
-  const [title, setTitle] = useState(
-    gameToUpdate?.title ? gameToUpdate.title : "",
-  );
-  const [image, setImage] = useState(
-    gameToUpdate?.image ? gameToUpdate.image : "",
-  );
-  const [typeOfGame, setTypeOfGame] = useState(
-    gameToUpdate?.typeOfGame ? gameToUpdate.typeOfGame : [],
-  );
-  const [theme, setTheme] = useState(
-    gameToUpdate?.theme ? gameToUpdate.theme : "",
-  );
-  const [typeOfView, setTypeOfView] = useState(
-    gameToUpdate?.typeOfView ? gameToUpdate.typeOfView : [],
-  );
-  const [releaseYear, setReleaseYear] = useState(
-    gameToUpdate?.releaseYear ? gameToUpdate.releaseYear : "",
-  );
-  const [playingMode, setPlayingMode] = useState(
-    gameToUpdate?.playingMode ? gameToUpdate.playingMode : [],
-  );
-  const [editor, setEditor] = useState(
-    gameToUpdate?.editor ? gameToUpdate.editor : [],
-  );
-  const [platform, setPlatform] = useState(
-    gameToUpdate?.platform ? gameToUpdate.platform : [],
-  );
+  const [title, setTitle] = useState("");
+  const [image, setImage] = useState("");
+  const [typeOfGame, setTypeOfGame] = useState([]);
+  const [theme, setTheme] = useState("");
+  const [typeOfView, setTypeOfView] = useState([]);
+  const [releaseYear, setReleaseYear] = useState("");
+  const [playingMode, setPlayingMode] = useState([]);
+  const [editor, setEditor] = useState([]);
+  const [platform, setPlatform] = useState([]);
 
   const handleTitle = (e) => {
     setTitle(e.target.value);
@@ -141,6 +135,14 @@ function FormGame() {
     return arr.map((item) => item.value);
   };
 
+  const formatDataForSelectFromBDD = (arr) => {
+    if (!arr) return [];
+    return arr.map((item) => ({
+      value: item.id,
+      label: item.name,
+    }));
+  };
+
   const addNewSpecValue = async (selectedValues, gameSpec) => {
     const results = [];
     for (const item of selectedValues) {
@@ -170,15 +172,19 @@ function FormGame() {
       releaseYear,
       typeOfView: transformMultiValuesForAPI(typeOfView),
       playingMode: transformMultiValuesForAPI(playingMode),
-      editor: addNewSpecValue(editor, 'companies'),
+      editor: addNewSpecValue(editor, "companies"),
       platform: transformMultiValuesForAPI(platform),
     };
 
-    try{
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/games`, body);
-        navigate('/games')
-    }catch(e){
-        console.log(e);
+    try {
+      if(gameId){
+        await axios.put(`${import.meta.env.VITE_API_URL}/games/${gameId}`, body);
+      }else{
+        await axios.post(`${import.meta.env.VITE_API_URL}/games`, body);
+      }
+      navigate("/games");
+    } catch (e) {
+      console.log(e);
     }
 
     console.log(body);
@@ -186,7 +192,19 @@ function FormGame() {
 
   useEffect(() => {
     getFilters();
+    if (gameId) {
+      getGame();
+    }
   }, []);
+
+  if (isLoading) {
+    return (
+      <img
+        src={LoaderImg}
+        className="absolute w-[15%] top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
+      />
+    );
+  }
 
   return (
     <div className="bg-[#232222] p-4 rounded-2xl">
