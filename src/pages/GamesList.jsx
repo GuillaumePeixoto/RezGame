@@ -2,7 +2,6 @@ import axios from "axios";
 import LoaderImg from "../assets/loading.gif";
 import { useEffect, useState } from "react";
 import GameCard from "../components/GameCard";
-import { useKeenSlider } from "keen-slider/react";
 import { Link } from "react-router-dom";
 
 function GamesList() {
@@ -36,7 +35,7 @@ function GamesList() {
         {games.length > 1 && (
           <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
             {games.map((game) => {
-              return <Link key={game.id} to={`/games/${game.id}`} ><GameCard game={game} /></Link>;
+              return <GameCard key={game.id} game={game} />;
             })}
           </div>
         )}

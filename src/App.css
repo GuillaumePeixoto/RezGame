@@ -78,11 +78,10 @@
   position: absolute;
   top: 10px;
   left: 40px;
-  background-color: #232222;
   padding: 0 5px;
 }
 
-.input-text-container input {
+.input-text-container input,.input-text-container textarea {
   color: white;
   border: 1px solid white;
   padding: 14px 12px;
@@ -93,7 +92,9 @@
 }
 
 .input-text-container input:focus,
-.input-text-container input:hover {
+.input-text-container input:hover,
+.input-text-container textarea:focus,
+.input-text-container textarea:hover {
   border: 1px solid #facc15;
 }
 

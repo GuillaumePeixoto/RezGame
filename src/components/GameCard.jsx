@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 
 function GameCard(props) {
   const posterRef = useRef(null);
@@ -33,7 +34,7 @@ function GameCard(props) {
   };
 
   return (
-    <div className="card-wrapper keen-slider__slide">
+    <Link to={`/games/${props.game.id}`} className="card-wrapper keen-slider__slide">
       <div
         ref={posterRef}
         className="poster"
@@ -43,7 +44,7 @@ function GameCard(props) {
       >
         {/* {props.game.title} */}
       </div>
-    </div>
+    </Link>
   );
 }
 
