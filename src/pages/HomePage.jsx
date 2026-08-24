@@ -13,27 +13,32 @@ function HomePage() {
     loop: false,
     mode: "free",
     slides: {
-      perView: "auto",
-      spacing: 2,
+      perView: 5,
+      spacing: 15,
     },
-    // breakpoints: {
-    //   "(min-width: 420px)": {
-    //     slides: { perView: "auto", spacing: 1 },
-    //   },
-    //   "(min-width: 768px)": {
-    //     slides: { perView: 2.2, spacing: 1 },
-    //   },
-    //   "(min-width: 1024px)": {
-    //     slides: { perView: 3, spacing: 15 },
-    //   },
-    // },
+    breakpoints: {
+      "(max-width: 640px)": {
+        slides: { perView: 2.3, spacing: 10 },
+      },
+      "(min-width: 641px) and (max-width: 1024px)": {
+        slides: { perView: 3.5, spacing: 12 },
+      },
+      "(min-width: 1025px)": {
+        slides: { perView: 3.8, spacing: 15 },
+      },
+      "(min-width: 1440px)": {
+        slides: { perView: 4.8, spacing: 15 },
+      },
+      "(min-width: 1840px)": {
+        slides: { perView: 6.5, spacing: 15 },
+      },
+    },
   });
 
   const getGames = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/games`);
       setGames(response.data);
-      console.log(response.data);
       setIsLoading(false);
     } catch (e) {
       console.log(e);
@@ -50,6 +55,15 @@ function HomePage() {
     }
   }, [games]);
 
+  if (isLoading) {
+    return (
+      <img
+        src={LoaderImg}
+        className="absolute w-[15%] top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
+      />
+    );
+  }
+
   return (
     <div className="homepage text-white">
       <div>
@@ -65,7 +79,6 @@ function HomePage() {
             <a href="#">← View all</a>
           </div>
           <div ref={sliderRef} className="keen-slider">
-            {isLoading && <img src={LoaderImg} />}
             {games.length > 1 &&
               games.map((game) => {
                 return <GameCard key={game.id} game={game} />;

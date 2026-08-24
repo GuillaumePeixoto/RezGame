@@ -12,7 +12,6 @@ function GamesList() {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/games`);
       setGames(response.data);
-      console.log(response.data);
       setIsLoading(false);
     } catch (e) {
       console.log(e);

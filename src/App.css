@@ -21,7 +21,7 @@
 
 .navbar h1 {
   font-family: "Tiny5", sans-serif;
-  color: #ffc300;
+  color: var(--yellow);
 }
 
 .menu-links {
@@ -33,7 +33,7 @@
   position: relative;
   text-decoration: none;
   font-weight: 900;
-  color: #ffc300;
+  color: var(--yellow);
 }
 
 .menu-links a:after {
@@ -49,7 +49,7 @@
 .menu-links a:hover:after {
   width: 100%;
   height: 2px;
-  background-color: #ffc300;
+  background-color: var(--yellow);
   transform: scaleX(1);
 }
 
@@ -109,6 +109,10 @@
 .keen-slider {
   padding: 20px 0px;
 }
+
+/* .keen-slider .keen-slider__slide{
+  width: 260px !important;
+} */
 
 /* 2. L'affiche elle-même */
 
