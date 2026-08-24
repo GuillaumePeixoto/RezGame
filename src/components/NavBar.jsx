@@ -16,7 +16,7 @@ function NavBar() {
                     <Link to="/games">
                         All games
                     </Link>
-                    <Link>
+                    <Link to="/guess-game">
                         GameGuess
                     </Link>
                     {/* Bouton connexion et inscription / si connecté alors icon user */}
