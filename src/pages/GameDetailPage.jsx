@@ -7,6 +7,7 @@ import { Box, Rating } from "@mui/material";
 
 function GameDetailPage() {
   const [game, setGame] = useState(null);
+  const [averageRating, setAverageRating] = useState(0);
   const navigate = useNavigate();
 
   const [titleForm, setTitleForm] = useState("");
@@ -46,10 +47,14 @@ function GameDetailPage() {
   const getGame = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/games/${gameId}`,
+        `${import.meta.env.VITE_API_URL}/games/${gameId}?_embed=ratings`,
       );
       setGame(response.data);
-      console.log(response.data);
+      setAverageRating(
+        response.data.ratings.reduce((acc, rating) => {
+          return acc + Number(rating["rating"]);
+        }, 0) / response.data.ratings.length,
+      );
       setIsLoading(false);
     } catch (e) {
       console.log(e);
@@ -67,6 +72,31 @@ function GameDetailPage() {
 
   const handleDelete = () => {
     deleteGame();
+  };
+
+  const handleRatingForm = async (e) => {
+    e.preventDefault();
+
+    let body = {
+      title: titleForm,
+      rating: ratingForm,
+      description: descriptionForm,
+      createdAt: new Date().toISOString().slice(0, 16).replace("T", " "),
+      gameId,
+    };
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/ratings`,
+        body,
+      );
+      setGame((prevGame) => ({
+        ...prevGame,
+        ratings: [...(prevGame.ratings || []), response.data],
+      }));
+    } catch (e) {
+      console.log("Error during the rating form :", e);
+    }
   };
 
   useEffect(() => {
@@ -111,6 +141,25 @@ function GameDetailPage() {
                 </button>
               </div>
             </div>
+            {game?.ratings.length > 0 && (
+              <div className="my-2">
+                <Box spacing={1} className="flex flex-row">
+                  <Rating
+                    name="read-only"
+                    value={
+                      averageRating
+                    }
+                    precision={0.1}
+                    readOnly
+                  />
+                  <div className="ms-2">
+                    {averageRating}{" "}
+                    / 5
+                  </div>
+                  <Box sx={{ ml: 2 }}>( {game?.ratings.length} )</Box>
+                </Box>
+              </div>
+            )}
             <p className="text-neutral-400">{game.releaseYear}</p>
             <p className="text-neutral-400">
               {game.editor.map((e) => e.name).join(", ")}
@@ -128,14 +177,17 @@ function GameDetailPage() {
         </div>
         <div className="bg-neutral-700 rounded-lg p-4 mt-6 space-y-3">
           <h4 className="text-xl">Add Rating</h4>
-          <form className="flex flex-wrap border border-s-white rounded-lg bg-neutral-800">
+          <form
+            onSubmit={handleRatingForm}
+            className="flex flex-wrap border border-s-white rounded-lg bg-neutral-800"
+          >
             <div className="input-text-container w-full">
-              <label for="image" className="text-white bg-neutral-800">
+              <label for="titleForm" className="text-white bg-neutral-800">
                 Title
               </label>
               <input
                 type="text"
-                id="image"
+                id="titleForm"
                 placeholder="Ex : Great game"
                 onChange={handleTitleForm}
                 value={titleForm}
@@ -164,11 +216,14 @@ function GameDetailPage() {
               </Box>
             </div>
             <div className="input-text-container w-full">
-              <label for="image" className="text-white bg-neutral-800">
+              <label
+                for="descriptionForm"
+                className="text-white bg-neutral-800"
+              >
                 Description
               </label>
               <textarea
-                id="image"
+                id="descriptionForm"
                 placeholder="Ex : Great game"
                 onChange={handleDescription}
                 value={descriptionForm}
@@ -180,28 +235,35 @@ function GameDetailPage() {
           </form>
         </div>
         <div className="bg-neutral-700 rounded-lg p-4 mt-6 space-y-3">
-          <h4 className="text-xl">Ratings</h4>
-          <div className="flex flex-col">
-            <div className="border border-s-white rounded-lg bg-neutral-800 p-4">
-              <div className="flex flex-row items-center justify-between w-full">
-                <p className="text-xl">Title</p>
-                <p className="text-neutral-400 text-sm">2026-08-23</p>
-              </div>
-
-              <Rating
-                name="read-only"
-                className="my-2"
-                value={2.5}
-                precision={0.5}
-                readOnly
-              />
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi
-                velit sapiente molestias distinctio omnis itaque nostrum
-                dignissimos facere dolor illum reprehenderit laboriosam
-                consequuntur veniam quam, reiciendis magnam quo quasi sequi!
+          <h4 className="text-xl">Ratings ({game?.ratings.length}) </h4>
+          <div className="flex flex-col gap-y-4">
+            {game?.ratings.length === 0 && (
+              <p className="text-xl text-(--yellow)">
+                Be the first one to put a rating on this game
               </p>
-            </div>
+            )}
+            {game?.ratings.length > 0 &&
+              game.ratings.map((rating) => {
+                return (
+                  <div className="border border-s-white rounded-lg bg-neutral-800 p-4">
+                    <div className="flex flex-row items-center justify-between w-full">
+                      <p className="text-xl">{rating.title}</p>
+                      <p className="text-neutral-400 text-sm">
+                        {rating.createdAt} by User
+                      </p>
+                    </div>
+
+                    <Rating
+                      name="read-only"
+                      className="my-2"
+                      value={rating.rating}
+                      precision={0.5}
+                      readOnly
+                    />
+                    <p>{rating.description}</p>
+                  </div>
+                );
+              })}
           </div>
         </div>
       </div>

@@ -19,7 +19,7 @@
   justify-content: space-between;
 }
 
-.navbar h1 {
+.navbar h1, .pixel-family {
   font-family: "Tiny5", sans-serif;
   color: var(--yellow);
 }
@@ -109,10 +109,6 @@
 .keen-slider {
   padding: 20px 0px;
 }
-
-/* .keen-slider .keen-slider__slide{
-  width: 260px !important;
-} */
 
 /* 2. L'affiche elle-même */
 

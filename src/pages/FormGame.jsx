@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
+import { customStyles } from '../styles/selectStyleReact';
+
 
 function FormGame() {
   const { gameId } = useParams();
@@ -18,39 +20,6 @@ function FormGame() {
     titlePage = "Update a Game";
     isUpdate = true;
   }
-
-  const customStyles = {
-    control: (base, state) => ({
-      ...base,
-      backgroundColor: "transparent",
-      borderColor: state.isFocused ? "#facc15" : "white",
-      borderRadius: "8px",
-      boxShadow: "none",
-      padding: "10px 0px",
-      height: "100%",
-      "&:hover": { borderColor: "#facc15" },
-    }),
-    menu: (base) => ({
-      ...base,
-      backgroundColor: "#1a1a1a",
-      zIndex: 9999,
-      marginTop: "-5px",
-    }),
-    option: (base, state) => ({
-      ...base,
-      backgroundColor: state.isFocused ? "#333" : "transparent",
-      color: "white",
-      cursor: "pointer",
-    }),
-    multiValue: (base) => ({
-      ...base,
-      backgroundColor: "#facc15",
-    }),
-    singleValue: (base) => ({
-      ...base,
-      color: "white",
-    }),
-  };
 
   const getGame = async () => {
     try {
@@ -67,9 +36,8 @@ function FormGame() {
       setPlayingMode(formatDataForSelectFromBDD(gameData.playingMode) || []);
       setEditor(formatDataForSelectFromBDD(gameData.editor) || []);
       setPlatform(formatDataForSelectFromBDD(gameData.platform) || []);
-      setIsLoading(false);
     } catch (e) {
-      console.log(e);
+      console.log("get game error: ",e);
     }
   };
 
@@ -79,9 +47,8 @@ function FormGame() {
         `${import.meta.env.VITE_API_URL}/filters`,
       );
       setFiltersList(response.data);
-      console.log(response.data);
     } catch (e) {
-      console.log(e);
+      console.log("Get filters error: ",e);
     }
   };
 
@@ -164,6 +131,8 @@ function FormGame() {
   const handleForm = async (e) => {
     e.preventDefault();
 
+    let editorValues = await addNewSpecValue(editor, "companies");
+
     let body = {
       title,
       image,
@@ -172,22 +141,22 @@ function FormGame() {
       releaseYear,
       typeOfView: transformMultiValuesForAPI(typeOfView),
       playingMode: transformMultiValuesForAPI(playingMode),
-      editor: addNewSpecValue(editor, "companies"),
+      editor: editorValues,
       platform: transformMultiValuesForAPI(platform),
     };
 
     try {
       if(gameId){
         await axios.put(`${import.meta.env.VITE_API_URL}/games/${gameId}`, body);
+        navigate(`/games/${gameId}`);
       }else{
         await axios.post(`${import.meta.env.VITE_API_URL}/games`, body);
+        navigate("/games");
       }
-      navigate("/games");
     } catch (e) {
       console.log(e);
     }
 
-    console.log(body);
   };
 
   useEffect(() => {
@@ -195,6 +164,7 @@ function FormGame() {
     if (gameId) {
       getGame();
     }
+    setIsLoading(false);
   }, []);
 
   if (isLoading) {
@@ -254,7 +224,7 @@ function FormGame() {
             value={typeOfGame}
             styles={customStyles}
             onChange={handleTypeOfGame}
-            placeholder="Choose game types"
+            placeholder="Choose game type(s)"
           />
         </div>
 
@@ -276,7 +246,7 @@ function FormGame() {
             value={theme}
             styles={customStyles}
             onChange={handleTheme}
-            placeholder="Choose game types"
+            placeholder="Choose theme(s)"
           />
         </div>
 
@@ -312,7 +282,7 @@ function FormGame() {
             styles={customStyles}
             value={editor}
             onChange={handleEditor}
-            placeholder="Choose game types"
+            placeholder="Choose editor(s)"
           />
         </div>
 
@@ -334,7 +304,7 @@ function FormGame() {
             styles={customStyles}
             value={typeOfView}
             onChange={handleTypeOfView}
-            placeholder="Choose game types"
+            placeholder="Choose type of view(s)"
           />
         </div>
 
@@ -356,7 +326,7 @@ function FormGame() {
             styles={customStyles}
             value={playingMode}
             onChange={handlePlayingMode}
-            placeholder="Choose game types"
+            placeholder="Choose playing mode(s)"
           />
         </div>
 
@@ -378,7 +348,7 @@ function FormGame() {
             styles={customStyles}
             value={platform}
             onChange={handlePlatform}
-            placeholder="Choose game types"
+            placeholder="Choose platform(s)"
           />
         </div>
 
