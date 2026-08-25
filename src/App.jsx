@@ -7,6 +7,7 @@ import GamesList from './pages/GamesList'
 import FormGame from './pages/FormGame'
 import GameDetailPage from './pages/GameDetailPage'
 import GuessGame from './pages/GuessGame'
+import Footer from './components/Footer'
 
 function App() {
 
@@ -14,7 +15,7 @@ function App() {
   return (
     <>
       <NavBar />
-      <div className="flex flex-col sm:w-5/6 lg:w-2/3 mx-4 sm:mx-auto mt-4">
+      <div className="flex flex-col sm:w-5/6 lg:w-3/4 mx-4 sm:mx-auto py-4 main-content">
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/games" element={<GamesList />}></Route>
@@ -24,6 +25,7 @@ function App() {
           <Route path="/add-game" element={<FormGame />}></Route>
         </Routes>
       </div>
+      <Footer></Footer>
     </>
   )
 }
