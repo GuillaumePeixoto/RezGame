@@ -1,39 +1,15 @@
+// HomePage.jsx
 import axios from "axios";
 import LoaderImg from "../assets/loading.gif";
 import { useEffect, useState } from "react";
-import GameCard from "../components/GameCard";
-import { useKeenSlider } from "keen-slider/react";
+import GameSlider from "../components/GameSlider";
 import "keen-slider/keen-slider.min.css";
 
 function HomePage() {
   const [games, setGames] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const [sliderRef, instanceRef] = useKeenSlider({
-    loop: false,
-    mode: "free",
-    slides: {
-      perView: 5,
-      spacing: 15,
-    },
-    breakpoints: {
-      "(max-width: 640px)": {
-        slides: { perView: 2.3, spacing: 10 },
-      },
-      "(min-width: 641px) and (max-width: 1024px)": {
-        slides: { perView: 3.5, spacing: 12 },
-      },
-      "(min-width: 1025px)": {
-        slides: { perView: 3.8, spacing: 15 },
-      },
-      "(min-width: 1440px)": {
-        slides: { perView: 4.8, spacing: 15 },
-      },
-      "(min-width: 1840px)": {
-        slides: { perView: 6.5, spacing: 15 },
-      },
-    },
-  });
+  const [filtersList, setFiltersList] = useState(null);
+  const [sliderConfigs, setSliderConfigs] = useState([]);
 
   const getGames = async () => {
     try {
@@ -45,15 +21,97 @@ function HomePage() {
     }
   };
 
+  const getFilters = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/filters`,
+      );
+      setFiltersList(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const buildConfigsFromFilters = (filters) => {
+    const configs = [];
+
+    filters.typeOfGames.forEach((type) => {
+      configs.push({
+        title: `${type.name} Games`,
+        category: "typeOfGame",
+        categoryValue: type.name,
+        categoryId: type.id
+      });
+    });
+
+    filters.themes.forEach((theme) => {
+      configs.push({
+        title: `${theme.name} Games`,
+        category: "theme",
+        categoryValue: theme.name,
+        categoryId: theme.id
+      });
+    });
+
+    filters.playingModes.forEach((mode) => {
+      configs.push({
+        title: `${mode.name} Games`,
+        category: "playingMode",
+        categoryValue: mode.name,
+        categoryId: mode.id
+      });
+    });
+
+    filters.platforms.forEach((platform) => {
+      configs.push({
+        title: `${platform.name} Games`,
+        category: "platform",
+        categoryValue: platform.name,
+        categoryId: platform.id
+      });
+    });
+
+    configs.push({ title: `${new Date().getFullYear()} Games`, special: "latest", year: new Date().getFullYear() })
+
+    return configs;
+  };
+
+  const pickRandomConfigs = (configs, count) => {
+    return [...configs].sort(() => Math.random() - 0.5).slice(0, count);
+  };
+
+  const filteredGames = (config, limit) => {
+    if (config.special === "latest") {
+      return games
+        .filter((g) => Number(g.releaseYear) === config.year)
+        .slice(0, limit);
+    }
+
+    return games
+      .filter((g) =>
+        g[config.category].some((item) => item.name === config.categoryValue),
+      )
+      .slice(0, limit);
+  };
+
   useEffect(() => {
     getGames();
+    getFilters();
   }, []);
 
   useEffect(() => {
-    if (games.length > 0) {
-      instanceRef.current?.update();
+    if (filtersList && games.length > 0 && sliderConfigs.length === 0) {
+      const allConfigs = [
+        ...buildConfigsFromFilters(filtersList),
+      ];
+
+      const configsWithResults = allConfigs.filter(
+        (config) => filteredGames(config, 15).length > 0,
+      );
+
+      setSliderConfigs(pickRandomConfigs(configsWithResults, 4));
     }
-  }, [games]);
+  }, [filtersList, games]);
 
   if (isLoading) {
     return (
@@ -72,19 +130,15 @@ function HomePage() {
           Play!
         </button>
       </div>
-      <div className="game-list-with-filters">
-        <div>
-          <div className="flex justify-between">
-            <p>Latest Game Added</p>
-            <a href="#">← View all</a>
-          </div>
-          <div ref={sliderRef} className="keen-slider">
-            {games.length > 1 &&
-              games.map((game) => {
-                return <GameCard key={game.id} game={game} />;
-              })}
-          </div>
-        </div>
+      <div className="game-list-with-filters flex flex-col gap-8">
+        {sliderConfigs.map((config, index) => (
+          <GameSlider
+            key={index}
+            title={config.title}
+            config={config}
+            games={filteredGames(config, 15)}
+          />
+        ))}
       </div>
     </div>
   );
