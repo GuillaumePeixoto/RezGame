@@ -87,7 +87,6 @@ function GamesList() {
       return;
     }
     for (const [key, value] of searchParams) {
-
       if (key === "releaseYear") {
         setReleaseYear(value);
         continue;
@@ -227,6 +226,8 @@ function GamesList() {
     }
   };
 
+  const [showFilters, setShowFilters] = useState(false);
+
   useEffect(() => {
     getFilters();
   }, []);
@@ -241,9 +242,9 @@ function GamesList() {
   }, [filters]);
 
   return (
-    <div>
+    <div className="p-5 bg-neutral-800 rounded-lg">
       <div className="mb-4 flex justify-between">
-        <h3 className="text-3xl text-white">Games</h3>
+        <h3 className="text-3xl text-white self-center">Games</h3>
         <Link
           to="/add-game"
           className="bg-(--yellow) px-5 py-3 rounded-lg text-xl hover:bg-transparent hover:text-(--yellow) border-2 hover:border-(--yellow)"
@@ -252,179 +253,211 @@ function GamesList() {
         </Link>
       </div>
       {isLoading && <img src={LoaderImg} />}
-      <details>
-        <summary className="text-white border border-white px-2 py-4 bg-[#232222]">
-          Filters
-        </summary>
-        <form
-          onSubmit={handleFilterForm}
-          className="text-white border border-white bg-[#232222]"
+      <div className="border border-white bg-[#232222]">
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className="w-full flex justify-between items-center text-white px-4 py-4 cursor-pointer"
         >
-          <div className="flex flex-wrap">
-            <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-              <label htmlFor="title" className="text-white bg-[#232222] z-1">
-                Title
-              </label>
-              <input
-                type="text"
-                id="title"
-                placeholder="Ex : Call of Duty: Modern Warfare 2"
-                onChange={handleTitle}
-                value={titleFilter}
-              />
-            </div>
-            <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-              <label htmlFor="image" className="text-white bg-[#232222] z-1">
-                Type of game
-              </label>
-              <Select
-                className="basic-multi-select h-full"
-                isMulti
-                options={
-                  filters?.typeOfGames
-                    ? filters.typeOfGames.map((g) => ({
-                        value: g.id,
-                        label: g.name,
-                      }))
-                    : []
-                }
-                value={typeOfGame}
-                styles={customStyles}
-                onChange={handleTypeOfGame}
-                placeholder="Choose game type(s)"
-              />
-            </div>
-            <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-              <label htmlFor="image" className="text-white bg-[#232222] z-1">
-                Theme
-              </label>
-              <Select
-                className="basic-multi-select h-full"
-                isMulti
-                options={
-                  filters?.themes
-                    ? filters.themes.map((g) => ({
-                        value: g.id,
-                        label: g.name,
-                      }))
-                    : []
-                }
-                value={theme}
-                styles={customStyles}
-                onChange={handleTheme}
-                placeholder="Choose game theme(s)"
-              />
-            </div>
+          Filters
+          <i
+            className={`bi bi-chevron-down transition-transform duration-800 ${
+              showFilters ? "rotate-180" : ""
+            }`}
+          ></i>
+        </button>
 
-            <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-              <label htmlFor="releaseYear" className="text-white bg-[#232222] z-1">
-                Release Year
-              </label>
-              <input
-                type="number"
-                id="releaseYear"
-                className="h-full"
-                placeholder="Ex : 2009"
-                onChange={handleReleaseYear}
-                value={releaseYear}
-              />
-            </div>
+        <div
+          className={`overflow-hidden transition-all duration-1200 ${
+            showFilters ? "max-h-250" : "max-h-0"
+          }`}
+        >
+          <form
+            onSubmit={handleFilterForm}
+            className="text-white border border-white bg-[#232222]"
+          >
+            <div className="flex flex-wrap">
+              <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
+                <label htmlFor="title" className="text-white bg-[#232222] z-1">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  placeholder="Ex : Call of Duty: Modern Warfare 2"
+                  onChange={handleTitle}
+                  value={titleFilter}
+                />
+              </div>
+              <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
+                <label htmlFor="image" className="text-white bg-[#232222] z-1">
+                  Type of game
+                </label>
+                <Select
+                  className="basic-multi-select h-full"
+                  isMulti
+                  options={
+                    filters?.typeOfGames
+                      ? filters.typeOfGames.map((g) => ({
+                          value: g.id,
+                          label: g.name,
+                        }))
+                      : []
+                  }
+                  value={typeOfGame}
+                  styles={customStyles}
+                  menuPortalTarget={document.body}
+                  menuPosition="fixed"
+                  onChange={handleTypeOfGame}
+                  placeholder="Choose game type(s)"
+                />
+              </div>
+              <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
+                <label htmlFor="image" className="text-white bg-[#232222] z-1">
+                  Theme
+                </label>
+                <Select
+                  className="basic-multi-select h-full"
+                  isMulti
+                  options={
+                    filters?.themes
+                      ? filters.themes.map((g) => ({
+                          value: g.id,
+                          label: g.name,
+                        }))
+                      : []
+                  }
+                  value={theme}
+                  styles={customStyles}
+                  menuPortalTarget={document.body}
+                  menuPosition="fixed"
+                  onChange={handleTheme}
+                  placeholder="Choose game theme(s)"
+                />
+              </div>
 
-            <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-              <label htmlFor="image" className="text-white bg-[#232222] z-1">
-                Editor
-              </label>
-              <Select
-                className="basic-multi-select h-full"
-                isMulti
-                options={
-                  filters?.companies
-                    ? filters.companies.map((g) => ({
-                        value: g.id,
-                        label: g.name,
-                      }))
-                    : []
-                }
-                styles={customStyles}
-                value={editor}
-                onChange={handleEditor}
-                placeholder="Choose editor(s)"
-              />
-            </div>
+              <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
+                <label
+                  htmlFor="releaseYear"
+                  className="text-white bg-[#232222] z-1"
+                >
+                  Release Year
+                </label>
+                <input
+                  type="number"
+                  id="releaseYear"
+                  className="h-full"
+                  placeholder="Ex : 2009"
+                  min="1970"
+                  onChange={handleReleaseYear}
+                  value={releaseYear}
+                />
+              </div>
 
-            <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-              <label htmlFor="image" className="text-white bg-[#232222] z-1">
-                Type of View
-              </label>
-              <Select
-                className="basic-multi-select h-full"
-                isMulti
-                options={
-                  filters?.typeOfViews
-                    ? filters.typeOfViews.map((g) => ({
-                        value: g.id,
-                        label: g.name,
-                      }))
-                    : []
-                }
-                styles={customStyles}
-                value={typeOfView}
-                onChange={handleTypeOfView}
-                placeholder="Choose type of view(s)"
-              />
-            </div>
+              <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
+                <label htmlFor="image" className="text-white bg-[#232222] z-1">
+                  Editor
+                </label>
+                <Select
+                  className="basic-multi-select h-full"
+                  isMulti
+                  options={
+                    filters?.companies
+                      ? filters.companies.map((g) => ({
+                          value: g.id,
+                          label: g.name,
+                        }))
+                      : []
+                  }
+                  styles={customStyles}
+                  value={editor}
+                  menuPortalTarget={document.body}
+                  menuPosition="fixed"
+                  onChange={handleEditor}
+                  placeholder="Choose editor(s)"
+                />
+              </div>
 
-            <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-              <label htmlFor="image" className="text-white bg-[#232222] z-1">
-                Playing Mode
-              </label>
-              <Select
-                className="basic-multi-select h-full"
-                isMulti
-                options={
-                  filters?.playingModes
-                    ? filters.playingModes.map((g) => ({
-                        value: g.id,
-                        label: g.name,
-                      }))
-                    : []
-                }
-                styles={customStyles}
-                value={playingMode}
-                onChange={handlePlayingMode}
-                placeholder="Choose playing mode(s)"
-              />
-            </div>
+              <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
+                <label htmlFor="image" className="text-white bg-[#232222] z-1">
+                  Type of View
+                </label>
+                <Select
+                  className="basic-multi-select h-full"
+                  isMulti
+                  options={
+                    filters?.typeOfViews
+                      ? filters.typeOfViews.map((g) => ({
+                          value: g.id,
+                          label: g.name,
+                        }))
+                      : []
+                  }
+                  styles={customStyles}
+                  value={typeOfView}
+                  onChange={handleTypeOfView}
+                  menuPortalTarget={document.body}
+                  menuPosition="fixed"
+                  placeholder="Choose type of view(s)"
+                />
+              </div>
 
-            <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-              <label htmlFor="image" className="text-white bg-[#232222] z-1">
-                Platform
-              </label>
-              <Select
-                className="basic-multi-select h-full"
-                isMulti
-                options={
-                  filters?.platforms
-                    ? filters.platforms.map((g) => ({
-                        value: g.id,
-                        label: g.name,
-                      }))
-                    : []
-                }
-                styles={customStyles}
-                value={platform}
-                onChange={handlePlatform}
-                placeholder="Choose platform(s)"
-              />
+              <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
+                <label htmlFor="image" className="text-white bg-[#232222] z-1">
+                  Playing Mode
+                </label>
+                <Select
+                  className="basic-multi-select h-full"
+                  isMulti
+                  options={
+                    filters?.playingModes
+                      ? filters.playingModes.map((g) => ({
+                          value: g.id,
+                          label: g.name,
+                        }))
+                      : []
+                  }
+                  styles={customStyles}
+                  value={playingMode}
+                  menuPortalTarget={document.body}
+                  menuPosition="fixed"
+                  onChange={handlePlayingMode}
+                  placeholder="Choose playing mode(s)"
+                />
+              </div>
+
+              <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
+                <label htmlFor="image" className="text-white bg-[#232222] z-1">
+                  Platform
+                </label>
+                <Select
+                  className="basic-multi-select h-full"
+                  isMulti
+                  options={
+                    filters?.platforms
+                      ? filters.platforms.map((g) => ({
+                          value: g.id,
+                          label: g.name,
+                        }))
+                      : []
+                  }
+                  styles={customStyles}
+                  value={platform}
+                  menuPortalTarget={document.body}
+                  menuPosition="fixed"
+                  onChange={handlePlatform}
+                  placeholder="Choose platform(s)"
+                />
+              </div>
+              <div className="p-5 w-full lg:w-1/2 2xl:w-1/3">
+                <button className="text-black font-semibold cursor-pointer py-4 bg-(--yellow) w-full h-full rounded-lg">
+                  Search
+                </button>
+              </div>
             </div>
-            <div className="p-5 w-full lg:w-1/2 2xl:w-1/3">
-              <button className="text-black font-semibold cursor-pointer py-4 bg-(--yellow) w-full h-full rounded-lg">
-                Search
-              </button>
-            </div>
-          </div>
-        </form>
-      </details>
+          </form>
+        </div>
+      </div>
+
       {games.length > 0 && (
         <div className="mt-4 grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4">
           {games.map((game) => {
