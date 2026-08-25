@@ -2,14 +2,15 @@ import axios from "axios";
 import LoaderImg from "../assets/loading.gif";
 import { useEffect, useState } from "react";
 import GameCard from "../components/GameCard";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Select from "react-select";
-import { customStyles } from '../styles/selectStyleReact';
+import { customStyles } from "../styles/selectStyleReact";
 
 function GamesList() {
   const [games, setGames] = useState([]);
   const [filters, setFilters] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Filters
   const [titleFilter, setTitleFilter] = useState("");
@@ -53,9 +54,103 @@ function GamesList() {
     setPlatform(e);
   };
 
+  let arrayOfFiltersFromURL = [
+    {
+      nameFromURL: "typeOfGame",
+      nameFromFilters: "typeOfGames",
+      setterInput: setTypeOfGame,
+    },
+    {
+      nameFromURL: "theme",
+      nameFromFilters: "themes",
+      setterInput: setTheme,
+    },
+    {
+      nameFromURL: "typeOfView",
+      nameFromFilters: "typeOfViews",
+      setterInput: setTypeOfView,
+    },
+    {
+      nameFromURL: "playingMode",
+      nameFromFilters: "playingModes",
+      setterInput: setPlayingMode,
+    },
+    {
+      nameFromURL: "platform",
+      nameFromFilters: "platforms",
+      setterInput: setPlatform,
+    },
+  ];
+
+  const updateFiltersFromURL = () => {
+    if (!filters || !filters?.typeOfGames) {
+      return;
+    }
+    for (const [key, value] of searchParams) {
+
+      if (key === "releaseYear") {
+        setReleaseYear(value);
+        continue;
+      }
+      if (key === "title") {
+        setTitleFilter(value);
+        continue;
+      }
+
+      let filtersKey = arrayOfFiltersFromURL.find(
+        (filter) => filter.nameFromURL === key,
+      );
+
+      if (!filtersKey) {
+        continue;
+      }
+
+      let valueFilterFromURL = filters[filtersKey.nameFromFilters].find(
+        (filterValue) => filterValue.id === value,
+      );
+
+      if (!valueFilterFromURL) {
+        continue; // id présent dans l'URL mais introuvable dans filters
+      }
+
+      const formattedValue = {
+        value: valueFilterFromURL.id,
+        label: valueFilterFromURL.name,
+      };
+
+      filtersKey.setterInput((filterValueList) => [
+        ...filterValueList,
+        formattedValue,
+      ]);
+    }
+  };
+
+  const buildParamsObject = () => {
+    const params = {};
+
+    if (titleFilter) params.title = titleFilter;
+    if (typeOfGame.length > 0)
+      params.typeOfGame = typeOfGame.map((f) => f.value);
+    if (theme.length > 0) params.theme = theme.map((f) => f.value);
+    if (releaseYear) params.releaseYear = releaseYear;
+    if (editor.length > 0) params.editor = editor.map((f) => f.value);
+    if (typeOfView.length > 0)
+      params.typeOfView = typeOfView.map((f) => f.value);
+    if (playingMode.length > 0)
+      params.playingMode = playingMode.map((f) => f.value);
+    if (platform.length > 0) params.platform = platform.map((f) => f.value);
+
+    return params;
+  };
+
   const handleFilterForm = async (e) => {
     e.preventDefault();
+    let filtersRequestQuery = createQueryFilter();
+    getGames(filtersRequestQuery);
+    setSearchParams(buildParamsObject());
+  };
 
+  const createQueryFilter = () => {
     let filtersRequest = "";
 
     const addFilter = (key, value) => {
@@ -107,19 +202,14 @@ function GamesList() {
       });
     }
 
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/games${filtersRequest}`,
-      );
-      setGames(response.data);
-    } catch (e) {
-      console.log(e);
-    }
+    return filtersRequest;
   };
 
-  const getGames = async () => {
+  const getGames = async (queryString = "") => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/games`);
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/games${queryString}`,
+      );
       setGames(response.data);
     } catch (e) {
       console.log(e);
@@ -138,10 +228,17 @@ function GamesList() {
   };
 
   useEffect(() => {
-    getGames();
     getFilters();
-    setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    updateFiltersFromURL();
+
+    const query = searchParams.toString();
+    getGames(query ? `?${query}` : "");
+
+    setIsLoading(false);
+  }, [filters]);
 
   return (
     <div>
@@ -157,7 +254,7 @@ function GamesList() {
       {isLoading && <img src={LoaderImg} />}
       <details>
         <summary className="text-white border border-white px-2 py-4 bg-[#232222]">
-          Filtres
+          Filters
         </summary>
         <form
           onSubmit={handleFilterForm}
@@ -165,7 +262,7 @@ function GamesList() {
         >
           <div className="flex flex-wrap">
             <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-              <label for="title" className="text-white bg-[#232222] z-1">
+              <label htmlFor="title" className="text-white bg-[#232222] z-1">
                 Title
               </label>
               <input
@@ -177,7 +274,7 @@ function GamesList() {
               />
             </div>
             <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-              <label for="image" className="text-white bg-[#232222] z-1">
+              <label htmlFor="image" className="text-white bg-[#232222] z-1">
                 Type of game
               </label>
               <Select
@@ -198,7 +295,7 @@ function GamesList() {
               />
             </div>
             <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-              <label for="image" className="text-white bg-[#232222] z-1">
+              <label htmlFor="image" className="text-white bg-[#232222] z-1">
                 Theme
               </label>
               <Select
@@ -220,7 +317,7 @@ function GamesList() {
             </div>
 
             <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-              <label for="releaseYear" className="text-white bg-[#232222] z-1">
+              <label htmlFor="releaseYear" className="text-white bg-[#232222] z-1">
                 Release Year
               </label>
               <input
@@ -234,7 +331,7 @@ function GamesList() {
             </div>
 
             <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-              <label for="image" className="text-white bg-[#232222] z-1">
+              <label htmlFor="image" className="text-white bg-[#232222] z-1">
                 Editor
               </label>
               <Select
@@ -256,7 +353,7 @@ function GamesList() {
             </div>
 
             <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-              <label for="image" className="text-white bg-[#232222] z-1">
+              <label htmlFor="image" className="text-white bg-[#232222] z-1">
                 Type of View
               </label>
               <Select
@@ -278,7 +375,7 @@ function GamesList() {
             </div>
 
             <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-              <label for="image" className="text-white bg-[#232222] z-1">
+              <label htmlFor="image" className="text-white bg-[#232222] z-1">
                 Playing Mode
               </label>
               <Select
@@ -300,7 +397,7 @@ function GamesList() {
             </div>
 
             <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-              <label for="image" className="text-white bg-[#232222] z-1">
+              <label htmlFor="image" className="text-white bg-[#232222] z-1">
                 Platform
               </label>
               <Select

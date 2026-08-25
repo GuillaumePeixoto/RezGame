@@ -182,7 +182,7 @@ function GameDetailPage() {
             className="flex flex-wrap border border-s-white rounded-lg bg-neutral-800"
           >
             <div className="input-text-container w-full">
-              <label for="titleForm" className="text-white bg-neutral-800">
+              <label htmlFor="titleForm" className="text-white bg-neutral-800">
                 Title
               </label>
               <input
@@ -217,7 +217,7 @@ function GameDetailPage() {
             </div>
             <div className="input-text-container w-full">
               <label
-                for="descriptionForm"
+                htmlFor="descriptionForm"
                 className="text-white bg-neutral-800"
               >
                 Description

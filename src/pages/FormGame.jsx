@@ -183,7 +183,7 @@ function FormGame() {
       </div>
       <form onSubmit={handleForm} className="flex flex-wrap">
         <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-          <label for="title" className="text-white bg-[#232222] z-1">
+          <label htmlFor="title" className="text-white bg-[#232222] z-1">
             Title
           </label>
           <input
@@ -195,7 +195,7 @@ function FormGame() {
           />
         </div>
         <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-          <label for="image" className="text-white bg-[#232222] z-1">
+          <label htmlFor="image" className="text-white bg-[#232222] z-1">
             Image URL
           </label>
           <input
@@ -207,7 +207,7 @@ function FormGame() {
           />
         </div>
         <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-          <label for="image" className="text-white bg-[#232222] z-1">
+          <label htmlFor="image" className="text-white bg-[#232222] z-1">
             Type of game
           </label>
           <Select
@@ -229,7 +229,7 @@ function FormGame() {
         </div>
 
         <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-          <label for="image" className="text-white bg-[#232222] z-1">
+          <label htmlFor="image" className="text-white bg-[#232222] z-1">
             Theme
           </label>
           <Select
@@ -251,7 +251,7 @@ function FormGame() {
         </div>
 
         <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-          <label for="releaseYear" className="text-white bg-[#232222] z-1">
+          <label htmlFor="releaseYear" className="text-white bg-[#232222] z-1">
             Release Year
           </label>
           <input
@@ -265,7 +265,7 @@ function FormGame() {
         </div>
 
         <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-          <label for="image" className="text-white bg-[#232222] z-1">
+          <label htmlFor="image" className="text-white bg-[#232222] z-1">
             Editor
           </label>
           <CreatableSelect
@@ -287,7 +287,7 @@ function FormGame() {
         </div>
 
         <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-          <label for="image" className="text-white bg-[#232222] z-1">
+          <label htmlFor="image" className="text-white bg-[#232222] z-1">
             Type of View
           </label>
           <Select
@@ -309,7 +309,7 @@ function FormGame() {
         </div>
 
         <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-          <label for="image" className="text-white bg-[#232222] z-1">
+          <label htmlFor="image" className="text-white bg-[#232222] z-1">
             Playing Mode
           </label>
           <Select
@@ -331,7 +331,7 @@ function FormGame() {
         </div>
 
         <div className="input-text-container w-full lg:w-1/2 2xl:w-1/3">
-          <label for="image" className="text-white bg-[#232222] z-1">
+          <label htmlFor="image" className="text-white bg-[#232222] z-1">
             Platform
           </label>
           <Select
