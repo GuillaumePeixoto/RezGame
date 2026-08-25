@@ -24,11 +24,6 @@
   color: var(--yellow);
 }
 
-.menu-links {
-  display: flex;
-  column-gap: 30px;
-}
-
 .menu-links a {
   position: relative;
   text-decoration: none;
