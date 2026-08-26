@@ -15,7 +15,8 @@ function HomePage() {
   const getGames = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/games`);
-      setGames(response.data);
+      const shuffled = [...response.data].sort(() => Math.random() - 0.5);
+      setGames(shuffled);
       setIsLoading(false);
     } catch (e) {
       console.log(e);
