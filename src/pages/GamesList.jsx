@@ -12,6 +12,12 @@ function GamesList() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Number of games show
+
+  const PAGE_SIZE = 20;
+
+  const [totalCount, setTotalCount] = useState(0);
+
   // Filters
   const [titleFilter, setTitleFilter] = useState("");
   const [typeOfGame, setTypeOfGame] = useState([]);
@@ -149,6 +155,11 @@ function GamesList() {
     setSearchParams(buildParamsObject());
   };
 
+  const handleLoadMore = () => {
+    const query = searchParams.toString();
+    getGames(query ? `?${query}` : "", games.length);
+  };
+
   const createQueryFilter = () => {
     let filtersRequest = "";
 
@@ -204,12 +215,25 @@ function GamesList() {
     return filtersRequest;
   };
 
-  const getGames = async (queryString = "") => {
+  const getGames = async (queryString = "", start = 0) => {
     try {
+      const separator = queryString ? "&" : "?";
+      const paginatedQuery = `${queryString}${separator}_start=${start}&_limit=${PAGE_SIZE}`;
+      console.log(paginatedQuery);
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/games${queryString}`,
+        `${import.meta.env.VITE_API_URL}/games${paginatedQuery}`,
       );
-      setGames(response.data);
+
+      const newGames = response.data;
+      const total = parseInt(response.headers["x-total-count"], 10) || 0;
+
+      setTotalCount(total);
+
+      if (start === 0) {
+        setGames(newGames);
+      } else {
+        setGames((prev) => [...prev, ...newGames]);
+      }
     } catch (e) {
       console.log(e);
     }
@@ -463,6 +487,16 @@ function GamesList() {
           {games.map((game) => {
             return <GameCard key={game.id} game={game} />;
           })}
+        </div>
+      )}
+      {games.length < totalCount && (
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={handleLoadMore}
+            className="px-8 py-3 bg-(--yellow) rounded-lg cursor-pointer font-bold hover:bg-transparent hover:text-(--yellow) border-2 border-(--yellow) transition-colors"
+          >
+            Load more
+          </button>
         </div>
       )}
     </div>
