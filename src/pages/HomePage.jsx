@@ -4,6 +4,7 @@ import LoaderImg from "../assets/loading.gif";
 import { useEffect, useState } from "react";
 import GameSlider from "../components/GameSlider";
 import "keen-slider/keen-slider.min.css";
+import { Link } from "react-router-dom";
 
 function HomePage() {
   const [games, setGames] = useState([]);
@@ -40,7 +41,7 @@ function HomePage() {
         title: `${type.name} Games`,
         category: "typeOfGame",
         categoryValue: type.name,
-        categoryId: type.id
+        categoryId: type.id,
       });
     });
 
@@ -49,7 +50,7 @@ function HomePage() {
         title: `${theme.name} Games`,
         category: "theme",
         categoryValue: theme.name,
-        categoryId: theme.id
+        categoryId: theme.id,
       });
     });
 
@@ -58,7 +59,7 @@ function HomePage() {
         title: `${mode.name} Games`,
         category: "playingMode",
         categoryValue: mode.name,
-        categoryId: mode.id
+        categoryId: mode.id,
       });
     });
 
@@ -67,11 +68,15 @@ function HomePage() {
         title: `${platform.name} Games`,
         category: "platform",
         categoryValue: platform.name,
-        categoryId: platform.id
+        categoryId: platform.id,
       });
     });
 
-    configs.push({ title: `${new Date().getFullYear()} Games`, special: "latest", year: new Date().getFullYear() })
+    configs.push({
+      title: `${new Date().getFullYear()} Games`,
+      special: "latest",
+      year: new Date().getFullYear(),
+    });
 
     return configs;
   };
@@ -101,9 +106,7 @@ function HomePage() {
 
   useEffect(() => {
     if (filtersList && games.length > 0 && sliderConfigs.length === 0) {
-      const allConfigs = [
-        ...buildConfigsFromFilters(filtersList),
-      ];
+      const allConfigs = [...buildConfigsFromFilters(filtersList)];
 
       const configsWithResults = allConfigs.filter(
         (config) => filteredGames(config, 15).length > 0,
@@ -124,11 +127,19 @@ function HomePage() {
 
   return (
     <div className="homepage text-white">
-      <div>
-        <h1 className="text-5xl text-center">Test our Guess Game</h1>
-        <button className="flex mx-auto mt-4 text-xl cursor-pointer py-2 px-4 bg-(--yellow) rounded-md">
-          Play!
-        </button>
+      <div className="flex justify-center">
+        <div className="bg-neutral-800 rounded-2xl px-12 py-6 text-center">
+          <h1 className="text-5xl font-bold">Guess the Game</h1>
+          <p className="text-neutral-400 mt-3 text-lg">
+            Will you find the game in 6 tries?
+          </p>
+          <Link
+            to="/guess-game"
+            className="inline-block mt-6 text-xl cursor-pointer py-3 px-8 bg-(--yellow) rounded-md font-bold hover:bg-transparent hover:text-(--yellow) border-2 border-(--yellow) transition-colors"
+          >
+            Play!
+          </Link>
+        </div>
       </div>
       <div className="game-list-with-filters flex flex-col gap-8">
         {sliderConfigs.map((config, index) => (
