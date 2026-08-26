@@ -61,6 +61,7 @@ function GuessGame() {
     let randomNumber = Math.floor(Math.random() * games.length);
     setGameToGuess(games[randomNumber]);
     setPreviousUserGuess([]);
+    setWinInRow(0);
     setHasWon(false);
   };
 
