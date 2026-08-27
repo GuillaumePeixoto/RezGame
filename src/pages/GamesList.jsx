@@ -265,6 +265,15 @@ function GamesList() {
     setIsLoading(false);
   }, [filters]);
 
+  if (isLoading) {
+    return (
+      <img
+        src={LoaderImg}
+        className="absolute w-[15%] top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
+      />
+    );
+  }
+
   return (
     <div className="p-5 bg-neutral-800 rounded-lg">
       <div className="mb-4 flex justify-between">
@@ -276,7 +285,6 @@ function GamesList() {
           Add game
         </Link>
       </div>
-      {isLoading && <img src={LoaderImg} />}
       <div className="border border-white bg-[#232222]">
         <button
           onClick={() => setShowFilters(!showFilters)}
