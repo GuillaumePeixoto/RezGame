@@ -1,17 +1,16 @@
-import './App.css'
-import 'keen-slider/keen-slider.min.css'
-import NavBar from './components/NavBar'
-import { Route, Routes } from 'react-router-dom'
-import HomePage from './pages/HomePage'
-import GamesList from './pages/GamesList'
-import FormGame from './pages/FormGame'
-import GameDetailPage from './pages/GameDetailPage'
-import GuessGame from './pages/GuessGame'
-import Footer from './components/Footer'
+import "./App.css";
+import "keen-slider/keen-slider.min.css";
+import NavBar from "./components/NavBar";
+import { Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import GamesList from "./pages/GamesList";
+import FormGame from "./pages/FormGame";
+import GameDetailPage from "./pages/GameDetailPage";
+import GuessGame from "./pages/GuessGame";
+import Footer from "./components/Footer";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
-
-
   return (
     <>
       <NavBar />
@@ -23,11 +22,12 @@ function App() {
           <Route path="/games/update/:gameId" element={<FormGame />}></Route>
           <Route path="/guess-game" element={<GuessGame />}></Route>
           <Route path="/add-game" element={<FormGame />}></Route>
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
       <Footer></Footer>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

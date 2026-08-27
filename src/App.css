@@ -102,11 +102,11 @@
 .card-wrapper {
   perspective: 1000px;
   width: 100%;
-  padding: 15px;
+  padding: 20px 15px;
 }
 
 .keen-slider {
-  padding: 20px 0px;
+  padding: 10px 0px;
 }
 
 /* 2. L'affiche elle-même */
