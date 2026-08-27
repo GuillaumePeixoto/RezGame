@@ -49,15 +49,25 @@ function GameDetailPage() {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/games/${gameId}?_embed=ratings`,
       );
+      console.log("response", response);
+      const statusCode = response.status;
+      console.log("Code de retour :", statusCode);
       setGame(response.data);
-      setAverageRating(
-        response.data.ratings.reduce((acc, rating) => {
-          return acc + Number(rating["rating"]);
-        }, 0) / response.data.ratings.length,
-      );
+      if (response.data.ratings.length > 0) {
+        let averageValue =
+          response.data.ratings.reduce((acc, rating) => {
+            return acc + Number(rating["rating"]);
+          }, 0) / response.data.ratings.length;
+        setAverageRating(averageValue.toFixed(1));
+      } else {
+        setAverageRating(0);
+      }
       setIsLoading(false);
     } catch (e) {
-      console.log(e);
+      if(e.response && e.response.status === 404){
+        navigate('/notfound');
+      }
+      console.log("error", e.response);
     }
   };
 
@@ -79,7 +89,7 @@ function GameDetailPage() {
 
     let body = {
       title: titleForm,
-      rating: ratingForm,
+      rating: parseFloat(ratingForm),
       description: descriptionForm,
       createdAt: new Date().toISOString().slice(0, 16).replace("T", " "),
       gameId,
@@ -90,10 +100,20 @@ function GameDetailPage() {
         `${import.meta.env.VITE_API_URL}/ratings`,
         body,
       );
+
+      let newRatingArray = [...(game.ratings || []), response.data];
+
       setGame((prevGame) => ({
         ...prevGame,
-        ratings: [...(prevGame.ratings || []), response.data],
+        ratings: newRatingArray,
       }));
+
+      let ratingValue =
+        newRatingArray.reduce((acc, rating) => {
+          return acc + Number(rating["rating"]);
+        }, 0) / newRatingArray.length;
+
+      setAverageRating(ratingValue.toFixed(1));
     } catch (e) {
       console.log("Error during the rating form :", e);
     }
@@ -146,16 +166,11 @@ function GameDetailPage() {
                 <Box spacing={1} className="flex flex-row">
                   <Rating
                     name="read-only"
-                    value={
-                      averageRating
-                    }
+                    value={averageRating}
                     precision={0.1}
                     readOnly
                   />
-                  <div className="ms-2">
-                    {averageRating}{" "}
-                    / 5
-                  </div>
+                  <div className="ms-2">{averageRating} / 5</div>
                   <Box sx={{ ml: 2 }}>( {game?.ratings.length} )</Box>
                 </Box>
               </div>
